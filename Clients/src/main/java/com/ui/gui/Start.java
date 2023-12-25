@@ -78,7 +78,7 @@ public class Start {
                             optionals.setDisable(false);
                         }
                         case "Start Process" -> {
-                            optlabel.setText("PID");
+                            optlabel.setText("Path");
                             optionals.setEditable(true);
                             optionals.setDisable(false);
                         }
@@ -124,12 +124,16 @@ public class Start {
             displayScene.getChildren().add(displayText);
         });
     }
-
+    public void clearDisplay() {
+        Platform.runLater(() -> displayScene.getChildren().clear());
+    }
     @FXML
     public void handleSendClick(ActionEvent event) throws InterruptedException {
         String request = requestbox.getSelectionModel().getSelectedItem();
         btnSend.setDisable(true);
         requestbox.setDisable(true);
+        optionals.clear();
+        clearDisplay();
         if (request.equals("Screenshot")){
             Thread thread = new Thread(()->{
                 try {
@@ -296,34 +300,36 @@ public class Start {
                 }
             });
         } else if (request.equals("Start Process") ) {
-            Thread thread = new Thread(() -> {
-                try {
-                    String pid = optionals.getText();
-                    SendMail.getInstance().Send("startprocess/" + pid);
-                    display("Mail had been sent!! Waiting for a response...", "green");
-                    //Thread.sleep(15000);
-                    String a = CheckMail.getInstance().listen("startprocess");
-                    if (a != null) {
-                        if(a.contains("res")){
-                            String[] parts = a.split("/");
-                            display(parts[1],"green");
-                        }else{
-                            display(a,"red");
+            optionals.setOnAction(e -> {
+                Thread thread = new Thread(() -> {
+                    try {
+                        String path = optionals.getText();
+                        SendMail.getInstance().Send("startprocess/" + path);
+                        display("Mail had been sent!! Waiting for a response...", "green");
+                        //Thread.sleep(15000);
+                        String a = CheckMail.getInstance().listen("startprocess");
+                        if (a != null) {
+                            if (a.contains("res")) {
+                                String[] parts = a.split("/");
+                                display(parts[1], "green");
+                            } else {
+                                display(a, "red");
+                            }
+                        } else {
+                            display("Error happened", "red");
                         }
-                    } else {
-                        display("Error happened", "red");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        display(ex.getMessage(), "red");
+                    } finally {
+                        Platform.runLater(() -> {
+                            btnSend.setDisable(false);
+                            requestbox.setDisable(false);
+                        });
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    display(e.getMessage(), "red");
-                } finally {
-                    Platform.runLater(() -> {
-                        btnSend.setDisable(false);
-                        requestbox.setDisable(false);
-                    });
-                }
+                });
+                thread.start();
             });
-            thread.start();
         } else if (request.equals("List App")) {
             Thread thread = new Thread(()-> {
                 try {
@@ -351,79 +357,80 @@ public class Start {
             });
             thread.start();
         } else if (request.equals("Shutdown")) {
-            Thread thread = new Thread(()->{
-                try {
-                    String sudo = optionals.getText();
-                    SendMail.getInstance().Send("shutdown/" + sudo);
-                    display("Mail had been sent!! Pleas wait 30 seconds, if there is response, it means some errors have occurred", "green");
-                    //Thread.sleep(10000);
-                    String a = CheckMail.getInstance().listen("shutdown");
-                    if(a.contains("res")) {
-                        String[] parts = a.split("/");
-                        display(parts[1], "green");
-                    }else
-                        display(a,"red");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    display(e.getMessage(), "red");
-                }
-                finally {
-                    Platform.runLater(()->{
-                        btnSend.setDisable(false);
-                        requestbox.setDisable(false);
-                    });
-                }
-            });
-            thread.start();
-        } else if (request.equals("Restart")) {
-            Thread thread = new Thread(()->{
-                try {
-                    SendMail.getInstance().Send("restart");
-                    display("Mail had been sent!! Pleas wait 30 seconds, if there is response, it means some errors have occurred", "green");
-                    //Thread.sleep(10000);
-                    String a = CheckMail.getInstance().listen("restart");
-                    if(a.contains("res")) {
-                        String[] parts = a.split("/");
-                        display(parts[1], "green");
-                    }else
-                        display(a,"red");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    display(e.getMessage(), "red");
-                }
-                finally {
-                    Platform.runLater(()->{
-                        btnSend.setDisable(false);
-                        requestbox.setDisable(false);
-                    });
-                }
-            });
-            thread.start();
-        } else if (request.equals("Run Exe/App")) {
-            Thread thread = new Thread(()->{
-                try {
-                    String file = optionals.getText();
-                    System.out.println(file);
-                    SendMail.getInstance().Send("runapp/" + file);
-                    display("Mail had been sent!! Waiting for a response...", "green");
-                    //Thread.sleep(15000);
-                    String a = CheckMail.getInstance().listen("runapp");
-                    if(a.contains("res")) {
-                        String[] parts = a.split("/");
-                        display(parts[1], "green");
+                Thread thread = new Thread(() -> {
+                    try {
+                        String sudo = optionals.getText();
+                        SendMail.getInstance().Send("shutdown/" + sudo);
+                        display("Mail had been sent!! Pleas wait 30 seconds, if there is response, it means some errors have occurred", "green");
+                        //Thread.sleep(10000);
+                        String a = CheckMail.getInstance().listen("shutdown");
+                        if (a.contains("res")) {
+                            String[] parts = a.split("/");
+                            display(parts[1], "green");
+                        } else
+                            display(a, "red");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        display(e.getMessage(), "red");
+                    } finally {
+                        Platform.runLater(() -> {
+                            btnSend.setDisable(false);
+                            requestbox.setDisable(false);
+                        });
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    display(e.getMessage(), "red");
-                }
-                finally {
-                    Platform.runLater(()->{
-                        btnSend.setDisable(false);
-                        requestbox.setDisable(false);
-                    });
-                }
+                });
+                thread.start();
+
+        } else if (request.equals("Restart")) {
+                Thread thread = new Thread(() -> {
+                    try {
+                        SendMail.getInstance().Send("restart");
+                        display("Mail had been sent!! Pleas wait 30 seconds, if there is response, it means some errors have occurred", "green");
+                        //Thread.sleep(10000);
+                        String a = CheckMail.getInstance().listen("restart");
+                        if (a.contains("res")) {
+                            String[] parts = a.split("/");
+                            display(parts[1], "green");
+                        } else
+                            display(a, "red");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        display(e.getMessage(), "red");
+                    } finally {
+                        Platform.runLater(() -> {
+                            btnSend.setDisable(false);
+                            requestbox.setDisable(false);
+                        });
+                    }
+                });
+                thread.start();
+
+        } else if (request.equals("Run Exe/App")) {
+            optionals.setOnAction(e -> {
+                Thread thread = new Thread(() -> {
+                    try {
+                        String file = optionals.getText();
+                        System.out.println(file);
+                        SendMail.getInstance().Send("runapp/" + file);
+                        display("Mail had been sent!! Waiting for a response...", "green");
+                        //Thread.sleep(15000);
+                        String a = CheckMail.getInstance().listen("runapp");
+                        if (a.contains("res")) {
+                            String[] parts = a.split("/");
+                            display(parts[1], "green");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        display(ex.getMessage(), "red");
+                    } finally {
+                        Platform.runLater(() -> {
+                            btnSend.setDisable(false);
+                            requestbox.setDisable(false);
+                        });
+                    }
+                });
+                thread.start();
             });
-            thread.start();
         } else if (request.equals("Log out")) {
             Thread thread = new Thread(()->{
                 try {
@@ -442,6 +449,7 @@ public class Start {
             });
             thread.start();
         } else if (request.equals("Get File")) {
+            optionals.setOnAction(e ->{
             Thread thread = new Thread(()->{
                 try {
                     String file = optionals.getText();
@@ -450,19 +458,16 @@ public class Start {
                     display("Mail had been sent!! Waiting for a response...", "green");
                     //Thread.sleep(15000);
                     String a = CheckMail.getInstance().listen("runapp");
-                    if (a != null) {
-                        if(a.contains("res")){
-                            String[] parts = a.split("/");
-                            display(parts[1],"green");
-                        }else{
-                            display(a,"red");
-                        }
-                    } else {
-                        display("Error happened", "red");
+                    File f = new File(a);
+                    if (f.exists()) {
+                        display("Successful! File saved in " + a, "green");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    display(e.getMessage(), "red");
+                    else {
+                        display("Error happened","red");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    display(ex.getMessage(), "red");
                 }
                 finally {
                     Platform.runLater(()->{
@@ -472,6 +477,7 @@ public class Start {
                 }
             });
             thread.start();
-        }
+        });
     }
+}
 }

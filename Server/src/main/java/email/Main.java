@@ -140,7 +140,7 @@ public class Main {
     }
     private static int Restart(String Password){
         try{
-            LogoutandShut.getInstance().Logout(Password);
+            LogoutandShut.getInstance().Restart(Password);
             return 1;
         }catch (Exception e){
             String subject = "res/Restart";
@@ -208,6 +208,7 @@ public class Main {
         return 0;
     }
     public static void main(String[] args) {
+        Main.getFile("C:\\coffee.jpg");
     }
 
 }

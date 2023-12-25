@@ -1,0 +1,37 @@
+App Name: Internet Explorer
+Executable Paths:
+C:\Program Files (x86)\Internet Explorer\ExtExport.exe
+C:\Program Files (x86)\Internet Explorer\ieinstal.exe
+C:\Program Files (x86)\Internet Explorer\ielowutil.exe
+C:\Program Files (x86)\Internet Explorer\iexplore.exe
+
+App Name: Microsoft Update Health Tools
+Executable Paths:
+C:\Program Files\Microsoft Update Health Tools\expediteupdater.exe
+C:\Program Files\Microsoft Update Health Tools\uhssvc.exe
+
+App Name: Windows Defender
+Executable Paths:
+C:\Program Files\Windows Defender\ConfigSecurityPolicy.exe
+C:\Program Files\Windows Defender\MpCmdRun.exe
+C:\Program Files\Windows Defender\MsMpEng.exe
+C:\Program Files\Windows Defender\NisSrv.exe
+
+App Name: Windows Mail
+Executable Paths:
+C:\Program Files (x86)\Windows Mail\wab.exe
+C:\Program Files (x86)\Windows Mail\wabmig.exe
+
+App Name: Windows Media Player
+Executable Paths:
+C:\Program Files (x86)\Windows Media Player\setup_wm.exe
+C:\Program Files (x86)\Windows Media Player\wmlaunch.exe
+C:\Program Files (x86)\Windows Media Player\wmpconfig.exe
+C:\Program Files (x86)\Windows Media Player\wmplayer.exe
+C:\Program Files (x86)\Windows Media Player\wmprph.exe
+C:\Program Files (x86)\Windows Media Player\wmpshare.exe
+
+App Name: Windows Photo Viewer
+Executable Paths:
+C:\Program Files (x86)\Windows Photo Viewer\ImagingDevices.exe
+
